@@ -98,6 +98,28 @@ lblPeriod2Friday = ttk.Label(period2FridayLabelFrame, textvariable=period2Friday
 lblPeriod3Friday = ttk.Label(period3FridayLabelFrame, textvariable=period3Friday)
 lblPeriod4Friday = ttk.Label(period4FridayLabelFrame, textvariable=period4Friday)
 
+bookComboBoxFrame = ttk.Frame(bookComputerLabelFrame)
+bookPeriodFrame = ttk.Frame(bookComputerLabelFrame)
+lblPeriodS = ttk.Label(bookComputerLabelFrame)
+spnPeriodS = ttk.Spinbox(bookComputerLabelFrame)
+btnBack = ttk.Button(bookComputerLabelFrame)
+btnReset = ttk.Button(bookComputerLabelFrame)
+
+lblStaffMember = ttk.Label(bookComboBoxFrame)
+cbxStaffMember = ttk.Combobox(bookComboBoxFrame)
+
+lblBooking = ttk.Label(bookComboBoxFrame)
+cbxBooking = ttk.Combobox(bookComboBoxFrame)
+
+lblDay = ttk.Label(bookComboBoxFrame)
+cbxDay = ttk.Combobox(bookComboBoxFrame)
+
+lblPeriod = ttk.Label(bookPeriodFrame)
+rBtnPeriod1 = ttk.Radiobutton(bookPeriodFrame, text="1")
+rBtnPeriod2 = ttk.Radiobutton(bookPeriodFrame, text="1")
+rBtnPeriod3 = ttk.Radiobutton(bookPeriodFrame, text="1")
+rBtnPeriod4 = ttk.Radiobutton(bookPeriodFrame, text="1")
+
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
 #PERIOD LABELFRAME GRID FORMATTING
