@@ -12,8 +12,6 @@ period2Monday = StringVar()
 period3Monday = StringVar()
 period4Monday = StringVar()
 
-period1Monday = "cock"
-
 period1Tuesday = StringVar()
 period2Tuesday = StringVar()
 period3Tuesday = StringVar()
@@ -34,10 +32,16 @@ period2Friday = StringVar()
 period3Friday = StringVar()
 period4Friday = StringVar()
 
+teacher = StringVar()
+computer = StringVar()
+day = StringVar()
+period = StringVar()
+periods = StringVar()
+periods = 1 # THIS SHIT BrOKE
 
 mainframe = ttk.Frame(root, padding=(3,3,12,12))
 
-lblTitle = ttk.Label(mainframe, textvariable=titleText)
+lblTitle = ttk.Label(mainframe, textvariable=computer)
 bookingBrowserLabelFrame = ttk.LabelFrame(mainframe, text="Browse Bookings")
 bookComputerLabelFrame = ttk.LabelFrame(mainframe, text="Book Computer")
 
@@ -100,27 +104,56 @@ lblPeriod4Friday = ttk.Label(period4FridayLabelFrame, textvariable=period4Friday
 
 bookComboBoxFrame = ttk.Frame(bookComputerLabelFrame)
 bookPeriodFrame = ttk.Frame(bookComputerLabelFrame)
-lblPeriodS = ttk.Label(bookComputerLabelFrame)
-spnPeriodS = ttk.Spinbox(bookComputerLabelFrame)
-btnBack = ttk.Button(bookComputerLabelFrame)
-btnReset = ttk.Button(bookComputerLabelFrame)
+lblPeriodS = ttk.Label(bookComputerLabelFrame, text="Period(s)")
+spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=4, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
+btnBack = ttk.Button(bookComputerLabelFrame, text="Back")
+btnReset = ttk.Button(bookComputerLabelFrame, text="Reset")
 
-lblStaffMember = ttk.Label(bookComboBoxFrame)
-cbxStaffMember = ttk.Combobox(bookComboBoxFrame)
+lblStaffMember = ttk.Label(bookComboBoxFrame, text="Staff Member")
+cbxStaffMember = ttk.Combobox(bookComboBoxFrame, textvariable=teacher)
+cbxStaffMember["values"] = ("Mr. Jensen", "Mr. Beekers", "Mr. Kivari", "Mr. Tate")
 
-lblBooking = ttk.Label(bookComboBoxFrame)
-cbxBooking = ttk.Combobox(bookComboBoxFrame)
+lblBooking = ttk.Label(bookComboBoxFrame, text="Booking")
+cbxBooking = ttk.Combobox(bookComboBoxFrame, textvariable=computer)
+cbxBooking["values"] = ("Chomebook Cart 1", "Chomebook Cart 2", "Room 33 - Computer Lab")
 
-lblDay = ttk.Label(bookComboBoxFrame)
-cbxDay = ttk.Combobox(bookComboBoxFrame)
+lblDay = ttk.Label(bookComboBoxFrame, text="Day")
+cbxDay = ttk.Combobox(bookComboBoxFrame, textvariable=day)
+cbxDay["values"] = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
-lblPeriod = ttk.Label(bookPeriodFrame)
-rBtnPeriod1 = ttk.Radiobutton(bookPeriodFrame, text="1")
-rBtnPeriod2 = ttk.Radiobutton(bookPeriodFrame, text="1")
-rBtnPeriod3 = ttk.Radiobutton(bookPeriodFrame, text="1")
-rBtnPeriod4 = ttk.Radiobutton(bookPeriodFrame, text="1")
+lblPeriod = ttk.Label(bookPeriodFrame, text="Period")
+rBtnPeriod1 = ttk.Radiobutton(bookPeriodFrame, text="1", variable=period, value=1)
+rBtnPeriod2 = ttk.Radiobutton(bookPeriodFrame, text="2", variable=period, value=2)
+rBtnPeriod3 = ttk.Radiobutton(bookPeriodFrame, text="3", variable=period, value=3)
+rBtnPeriod4 = ttk.Radiobutton(bookPeriodFrame, text="4", variable=period, value=4)
 
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+
+lblTitle.grid(column=0, row=0, sticky=(N, W, E, S))
+bookingBrowserLabelFrame.grid(column=0, row=1, sticky=(N, W, E, S))
+bookComputerLabelFrame.grid(column=0, row=2, sticky=(N, W, E, S))
+
+bookComboBoxFrame.grid(column=0, row=0, rowspan=3, sticky=(N, W, E, S))
+bookPeriodFrame.grid(column=1, row=0, rowspan=3, sticky=(N, W, E, S))
+lblPeriodS.grid(column=2, row=0, sticky=(N, W, E, S))
+spnPeriodS.grid(column=3, row=0, sticky=(N, W, E, S))
+btnBack.grid(column=2, row=1, columnspan=2, sticky=(N, W, E, S))
+btnReset.grid(column=2, row=2, columnspan=2, sticky=(N, W, E, S))
+
+lblStaffMember.grid(column=0, row=0, sticky=(N, W, E, S))
+cbxStaffMember.grid(column=0, row=1, sticky=(N, W, E, S))
+
+lblBooking.grid(column=0, row=2, sticky=(N, W, E, S))
+cbxBooking.grid(column=0, row=3, sticky=(N, W, E, S))
+lblDay.grid(column=0, row=4, sticky=(N, W, E, S))
+cbxDay.grid(column=0, row=5, sticky=(N, W, E, S))
+
+lblPeriod.grid(column=0, row=0, sticky=(N, W, E, S))
+rBtnPeriod1.grid(column=0, row=1, sticky=(N, W, E, S))
+rBtnPeriod2.grid(column=0, row=2, sticky=(N, W, E, S))
+rBtnPeriod3.grid(column=0, row=3, sticky=(N, W, E, S))
+rBtnPeriod4.grid(column=0, row=4, sticky=(N, W, E, S))
+
 
 #PERIOD LABELFRAME GRID FORMATTING
 lblMonday.grid(column=0, row=0, sticky=(N, E, S, W))
@@ -129,29 +162,29 @@ lblWednesday.grid(column=2, row=0, sticky=(N, E, S, W))
 lblThursday.grid(column=3, row=0, sticky=(N, E, S, W))
 lblFriday.grid(column=4, row=0, sticky=(N, E, S, W))
 
-period1MondayLabelFrame.grid(column=0, row=1)
-period1TuesdayLabelFrame.grid(column=1, row=1)
-period1WednesdayLabelFrame.grid(column=2, row=1)
-period1ThursdayLabelFrame.grid(column=3, row=1)
-period1FridayLabelFrame.grid(column=4, row=1)
+period1MondayLabelFrame.grid(column=0, row=1, sticky=(N, W, E, S))
+period1TuesdayLabelFrame.grid(column=1, row=1, sticky=(N, W, E, S))
+period1WednesdayLabelFrame.grid(column=2, row=1, sticky=(N, W, E, S))
+period1ThursdayLabelFrame.grid(column=3, row=1, sticky=(N, W, E, S))
+period1FridayLabelFrame.grid(column=4, row=1, sticky=(N, W, E, S))
 
-period2MondayLabelFrame.grid(column=0, row=2)
-period2TuesdayLabelFrame.grid(column=1, row=2)
-period2WednesdayLabelFrame.grid(column=2, row=2)
-period2ThursdayLabelFrame.grid(column=3, row=2)
-period2FridayLabelFrame.grid(column=4, row=2)
+period2MondayLabelFrame.grid(column=0, row=2, sticky=(N, W, E, S))
+period2TuesdayLabelFrame.grid(column=1, row=2, sticky=(N, W, E, S))
+period2WednesdayLabelFrame.grid(column=2, row=2, sticky=(N, W, E, S))
+period2ThursdayLabelFrame.grid(column=3, row=2, sticky=(N, W, E, S))
+period2FridayLabelFrame.grid(column=4, row=2, sticky=(N, W, E, S))
 
-period3MondayLabelFrame.grid(column=0, row=3)
-period3TuesdayLabelFrame.grid(column=1, row=3)
-period3WednesdayLabelFrame.grid(column=2, row=3)
-period3ThursdayLabelFrame.grid(column=3, row=3)
-period3FridayLabelFrame.grid(column=4, row=3)
+period3MondayLabelFrame.grid(column=0, row=3, sticky=(N, W, E, S))
+period3TuesdayLabelFrame.grid(column=1, row=3, sticky=(N, W, E, S))
+period3WednesdayLabelFrame.grid(column=2, row=3, sticky=(N, W, E, S))
+period3ThursdayLabelFrame.grid(column=3, row=3, sticky=(N, W, E, S))
+period3FridayLabelFrame.grid(column=4, row=3, sticky=(N, W, E, S))
 
-period4MondayLabelFrame.grid(column=0, row=4)
-period4TuesdayLabelFrame.grid(column=1, row=4)
-period4WednesdayLabelFrame.grid(column=2, row=4)
-period4ThursdayLabelFrame.grid(column=3, row=4)
-period4FridayLabelFrame.grid(column=4, row=4)
+period4MondayLabelFrame.grid(column=0, row=4, sticky=(N, W, E, S))
+period4TuesdayLabelFrame.grid(column=1, row=4, sticky=(N, W, E, S))
+period4WednesdayLabelFrame.grid(column=2, row=4, sticky=(N, W, E, S))
+period4ThursdayLabelFrame.grid(column=3, row=4, sticky=(N, W, E, S))
+period4FridayLabelFrame.grid(column=4, row=4, sticky=(N, W, E, S))
 
 #PERIOD LABELFRAME LABEL GRID FORMATTING
 lblPeriod1Monday.grid(column=0, row=0, sticky=(N, E, S, W))
@@ -178,6 +211,55 @@ lblPeriod1Friday.grid(column=0, row=0, sticky=(N, E, S, W))
 lblPeriod2Friday.grid(column=0, row=0, sticky=(N, E, S, W))
 lblPeriod3Friday.grid(column=0, row=0, sticky=(N, E, S, W))
 lblPeriod4Friday.grid(column=0, row=0, sticky=(N, E, S, W))
+
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+
+mainframe.columnconfigure(0, weight=1)
+mainframe.rowconfigure(0, weight=1)
+mainframe.rowconfigure(1, weight=1)
+mainframe.rowconfigure(2, weight=1)
+
+bookingBrowserLabelFrame.columnconfigure(0, weight=1)
+bookingBrowserLabelFrame.columnconfigure(1, weight=1)
+bookingBrowserLabelFrame.columnconfigure(2, weight=1)
+bookingBrowserLabelFrame.columnconfigure(3, weight=1)
+bookingBrowserLabelFrame.columnconfigure(4, weight=1)
+
+bookingBrowserLabelFrame.rowconfigure(0, weight=1)
+bookingBrowserLabelFrame.rowconfigure(1, weight=1)
+bookingBrowserLabelFrame.rowconfigure(2, weight=1)
+bookingBrowserLabelFrame.rowconfigure(3, weight=1)
+bookingBrowserLabelFrame.rowconfigure(4, weight=1)
+
+bookComputerLabelFrame.columnconfigure(0, weight=1)
+bookComputerLabelFrame.columnconfigure(1, weight=3)
+bookComputerLabelFrame.columnconfigure(2, weight=1)
+bookComputerLabelFrame.columnconfigure(3, weight=1)
+
+bookComputerLabelFrame.rowconfigure(0, weight=1)
+bookComputerLabelFrame.rowconfigure(1, weight=1)
+bookComputerLabelFrame.rowconfigure(2, weight=1)
+
+bookComboBoxFrame.columnconfigure(0, weight=1)
+
+bookComboBoxFrame.rowconfigure(0, weight=1)
+bookComboBoxFrame.rowconfigure(1, weight=1)
+bookComboBoxFrame.rowconfigure(2, weight=1)
+bookComboBoxFrame.rowconfigure(3, weight=1)
+bookComboBoxFrame.rowconfigure(4, weight=1)
+bookComboBoxFrame.rowconfigure(5, weight=1)
+
+bookPeriodFrame.columnconfigure(0, weight=1)
+
+
+bookPeriodFrame.rowconfigure(0, weight=1)
+bookPeriodFrame.rowconfigure(1, weight=1)
+bookPeriodFrame.rowconfigure(2, weight=1)
+bookPeriodFrame.rowconfigure(3, weight=1)
+bookPeriodFrame.rowconfigure(4, weight=1)
+
+
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
