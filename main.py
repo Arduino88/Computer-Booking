@@ -51,8 +51,6 @@ day = StringVar(value="Monday")
 period = IntVar()
 periods = StringVar(value=1)
 
-
-
 def assignBookingInformation(bookingNumber):
         teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
         teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
@@ -119,7 +117,6 @@ def updateBookingBrowser():
                 tempVar = tempVar - 1
     root.after(100, updateBookingBrowser)
 updateBookingBrowser()
-
 
 def saveJSON():
     with open("masterlist.json", "w") as fp:
@@ -245,7 +242,6 @@ rBtnPeriod2.grid(column=0, row=2, sticky="nwes")
 rBtnPeriod3.grid(column=0, row=3, sticky="nwes")
 rBtnPeriod4.grid(column=0, row=4, sticky="nwes")
 
-
 #PERIOD LABELFRAME GRID FORMATTING
 lblMonday.grid(column=0, row=0, sticky="nwes")
 lblTuesday.grid(column=1, row=0, sticky="nwes")
@@ -342,7 +338,6 @@ bookComboBoxFrame.rowconfigure(4, weight=1)
 bookComboBoxFrame.rowconfigure(5, weight=1)
 
 bookPeriodFrame.columnconfigure(0, weight=1)
-
 
 bookPeriodFrame.rowconfigure(0, weight=1)
 bookPeriodFrame.rowconfigure(1, weight=1)
