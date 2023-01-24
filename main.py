@@ -1,41 +1,20 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from pathlib import Path
 import json
-import os
+import sv_ttk
 
-teachers = {
-    "Mr. Jensen": {},
-    "Mr. Beekers": {},
-    "Mr. Kivari": {},
-    "Ms. Wraight": {},
-    "Ms. Best": {},
-    "Mr. White": {},
-    "Mr. Barraball": {},
-}
+def loadJSON():
+    with open("masterlist.json") as fp:
+        global teachers
+        teachers = json.load(fp)
 
+loadJSON()
 
 teacherTuple = tuple(teachers.keys())
 print(teacherTuple)
 computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab")
 days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-
-
-#def initializeTeachers(): #FIX THIS LATER
-
-def verifyMasterLists():
-    folderPath = Path("Teachers\\")
-    if not folderPath.exists():
-        os.mkdir(folderPath)
-    for staff in teacherTuple:
-        pathString = "Teachers\\" + staff + ".txt"
-        filePath = Path(pathString)
-        if not filePath.exists():
-            file = open(pathString, "w+")
-            file.close()
-
-verifyMasterLists()
 
 root = Tk()
 root.title("Computer Booking v1.0")
@@ -72,21 +51,26 @@ computer = StringVar()
 day = StringVar()
 period = StringVar()
 periods = StringVar()
-periods = 1 # THIS SHIT BrOKE
+
+def assignBookingInformation(bookingNumber):
+        teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
+        teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
+        teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
 
 def bookComputer():
     try:
         teacherList = teachers[teacher.get()].keys()
         if not "Period1" in teacherList:
             bookingNumber = 1
+            assignBookingInformation(bookingNumber=bookingNumber)
         elif not "Period2" in teacherList:
             bookingNumber = 2
+            assignBookingInformation(bookingNumber=bookingNumber)
+        elif not "Period3" in teacherList:
+            bookingNumber = 3
+            assignBookingInformation(bookingNumber=bookingNumber)
         else:
-            bookingNumber = 3 #ERROR CHECK FOR MORE THAN 3 BOOKINGS
-
-        teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
-        teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
-        teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
+            messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
 
         saveJSON()
     except KeyError:
@@ -98,8 +82,6 @@ def saveJSON():
 
 def reset():
     print(teachers)
-
-
 
 mainframe = ttk.Frame(root, padding=(3,3,12,12))
 
@@ -325,5 +307,7 @@ bookPeriodFrame.rowconfigure(4, weight=1)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
+
+sv_ttk.set_theme("dark")
 
 root.mainloop()
