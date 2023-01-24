@@ -1,0 +1,10 @@
+def verifyMasterLists():
+    folderPath = Path("Teachers\\")
+    if not folderPath.exists():
+        os.mkdir(folderPath)
+    for staff in teacherTuple:
+        pathString = "Teachers\\" + staff + ".txt"
+        filePath = Path(pathString)
+        if not filePath.exists():
+            file = open(pathString, "w+")
+            file.close()
