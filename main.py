@@ -2,19 +2,33 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from pathlib import Path
+import json
 import os
 
-#Tuples are plural
-teachers = ("Mr. Jensen", "Mr. Beekers", "Mr. Kivari", "Ms. Wraight")
-computers = ("Chomebook Cart 1", "Chomebook Cart 2", "Room 33 - Computer Lab")
+teachers = {
+    "Mr. Jensen": {},
+    "Mr. Beekers": {},
+    "Mr. Kivari": {},
+    "Ms. Wraight": {},
+    "Ms. Best": {},
+    "Mr. White": {},
+    "Mr. Barraball": {},
+}
+
+
+teacherTuple = tuple(teachers.keys())
+print(teacherTuple)
+computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab")
 days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
+
+#def initializeTeachers(): #FIX THIS LATER
 
 def verifyMasterLists():
     folderPath = Path("Teachers\\")
     if not folderPath.exists():
         os.mkdir(folderPath)
-    for staff in teachers:
+    for staff in teacherTuple:
         pathString = "Teachers\\" + staff + ".txt"
         filePath = Path(pathString)
         if not filePath.exists():
@@ -59,6 +73,33 @@ day = StringVar()
 period = StringVar()
 periods = StringVar()
 periods = 1 # THIS SHIT BrOKE
+
+def bookComputer():
+    try:
+        teacherList = teachers[teacher.get()].keys()
+        if not "Period1" in teacherList:
+            bookingNumber = 1
+        elif not "Period2" in teacherList:
+            bookingNumber = 2
+        else:
+            bookingNumber = 3 #ERROR CHECK FOR MORE THAN 3 BOOKINGS
+
+        teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
+        teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
+        teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
+
+        saveJSON()
+    except KeyError:
+        pass
+
+def saveJSON():
+    with open("masterlist.json", "w") as fp:
+        json.dump(teachers, fp, indent=4, sort_keys=True)
+
+def reset():
+    print(teachers)
+
+
 
 mainframe = ttk.Frame(root, padding=(3,3,12,12))
 
@@ -127,12 +168,12 @@ bookComboBoxFrame = ttk.Frame(bookComputerLabelFrame)
 bookPeriodFrame = ttk.Frame(bookComputerLabelFrame)
 lblPeriodS = ttk.Label(bookComputerLabelFrame, text="Period(s)")
 spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=4, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
-btnBack = ttk.Button(bookComputerLabelFrame, text="Back")
-btnReset = ttk.Button(bookComputerLabelFrame, text="Reset")
+btnBook = ttk.Button(bookComputerLabelFrame, text="Book", command=bookComputer)
+btnReset = ttk.Button(bookComputerLabelFrame, text="Reset", command=reset)
 
 lblStaffMember = ttk.Label(bookComboBoxFrame, text="Staff Member")
 cbxStaffMember = ttk.Combobox(bookComboBoxFrame, textvariable=teacher)
-cbxStaffMember["values"] = teachers
+cbxStaffMember["values"] = teacherTuple
 
 lblBooking = ttk.Label(bookComboBoxFrame, text="Booking")
 cbxBooking = ttk.Combobox(bookComboBoxFrame, textvariable=computer)
@@ -158,7 +199,7 @@ bookComboBoxFrame.grid(column=0, row=0, rowspan=3, sticky="nwes")
 bookPeriodFrame.grid(column=1, row=0, rowspan=3, sticky="nwes")
 lblPeriodS.grid(column=2, row=0, sticky="nwes")
 spnPeriodS.grid(column=3, row=0, sticky="nwes")
-btnBack.grid(column=2, row=1, columnspan=2, sticky="nwes")
+btnBook.grid(column=2, row=1, columnspan=2, sticky="nwes")
 btnReset.grid(column=2, row=2, columnspan=2, sticky="nwes")
 
 lblStaffMember.grid(column=0, row=0, sticky="nwes")
