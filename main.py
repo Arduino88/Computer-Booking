@@ -45,12 +45,11 @@ period2Friday = StringVar()
 period3Friday = StringVar()
 period4Friday = StringVar()
 
-teacher = StringVar()
-computer = StringVar()
-computer.set("Chromebook Cart 2")
-day = StringVar()
+teacher = StringVar(value="Mr. Barraball")
+computer = StringVar(value="Chromebook Cart 1")
+day = StringVar(value="Monday")
 period = IntVar()
-periods = StringVar()
+periods = StringVar(value=1)
 
 
 
@@ -115,8 +114,10 @@ def updateBookingBrowser():
             tempVar = teachers[item]["Booking#"]
             while tempVar > 0:
                 stringVariable = "period" + str(teachers[item]["Period" + str(tempVar)]) + teachers[item]["Day" + str(tempVar)]
-                eval(stringVariable + ".set(\"" + item + "\")")
+                if str(teachers[item]["Computer" + str(tempVar)]) == computer.get():
+                    eval(stringVariable + ".set(\"" + item + "\")")
                 tempVar = tempVar - 1
+    root.after(100, updateBookingBrowser)
 updateBookingBrowser()
 
 
@@ -360,4 +361,5 @@ for child in mainframe.winfo_children():
 
 sv_ttk.set_theme("dark")
 
+root.after(100, updateBookingBrowser)
 root.mainloop()

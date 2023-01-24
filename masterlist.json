@@ -1,5 +1,16 @@
 {
-    "Mr. Barraball": {},
+    "Mr. Barraball": {
+        "Booking#": 3,
+        "Computer1": "Chromebook Cart 1",
+        "Computer2": "Chromebook Cart 2",
+        "Computer3": "Room 33 - Computer Lab",
+        "Day1": "Monday",
+        "Day2": "Monday",
+        "Day3": "Monday",
+        "Period1": 1,
+        "Period2": 1,
+        "Period3": 1
+    },
     "Mr. Beekers": {},
     "Mr. Jensen": {},
     "Mr. Kivari": {},
