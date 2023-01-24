@@ -83,37 +83,46 @@ teacher = StringVar(value="Mr. Barraball") #Combobox
 computer = StringVar(value="Chromebook Cart 1") #Combobox
 day = StringVar(value="Monday") #Combobox
 period = IntVar() #Radio Button
-periods = StringVar(value=1) #Spinbox
+periods = IntVar(value=1) #Spinbox
 
 #Function Definition
-def assignBookingInformation(bookingNumber):
-        teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
+def assignBookingInformation(bookingNumber, periodInt):
+        teachers[teacher.get()]["Period" + str(bookingNumber)] = periodInt
         teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
         teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
         teachers[teacher.get()]["Booking#"] = bookingNumber
 
 def bookComputer():
-    try:
-        teacherList = teachers[teacher.get()].keys()
-        stringVariable = "period" + str(period.get()) + day.get()
-        if eval(stringVariable + ".get() == \"\""):
-            if not "Period1" in teacherList:
-                bookingNumber = 1
-                assignBookingInformation(bookingNumber=bookingNumber)
-            elif not "Period2" in teacherList:
-                bookingNumber = 2
-                assignBookingInformation(bookingNumber=bookingNumber)
-            elif not "Period3" in teacherList:
-                bookingNumber = 3
-                assignBookingInformation(bookingNumber=bookingNumber)
+    periodInt = period.get()
+    counter = periods.get()
+    skip = False
+    print(str(counter) + "  " + str(periodInt))
+    while counter > 0 and not skip:
+        try:
+            teacherList = teachers[teacher.get()].keys()
+            stringVariable = "period" + str(periodInt) + day.get()
+            if eval(stringVariable + ".get() == \"\""):
+                if not "Period1" in teacherList:
+                    bookingNumber = 1
+                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
+                elif not "Period2" in teacherList:
+                    bookingNumber = 2
+                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
+                elif not "Period3" in teacherList:
+                    bookingNumber = 3
+                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
+                else:
+                    messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
+                    skip = True
             else:
-                messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
-        else:
-            messagebox.showerror(title="Attempted Overwrite", message=(str(eval(stringVariable + ".get()")) + " already has Period " + str(period.get()) + " booked on " + day.get()), icon="error", detail=("Please book a different period :)"))
-        saveJSON()
-        updateBookingBrowser()
-    except KeyError:
-        pass
+                messagebox.showerror(title="Attempted Overwrite", message=(str(eval(stringVariable + ".get()")) + " already has Period " + str(period.get()) + " booked on " + day.get()), icon="error", detail=("Please book a different period :)"))
+                skip = True
+            saveJSON()
+            updateBookingBrowser()
+        except KeyError:
+            pass
+        periodInt = periodInt + 1
+        counter = counter - 1
 
 def updateBookingBrowser():
     period1Monday.set(value="")
@@ -231,7 +240,7 @@ lblPeriod4Friday = ttk.Label(period4FridayLabelFrame, textvariable=period4Friday
 bookComboBoxFrame = ttk.Frame(bookComputerLabelFrame)
 bookPeriodFrame = ttk.Frame(bookComputerLabelFrame)
 lblPeriodS = ttk.Label(bookComputerLabelFrame, text="Period(s)")
-spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=4, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
+spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=3, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
 btnBook = ttk.Button(bookComputerLabelFrame, text="Book", command=bookComputer)
 btnReset = ttk.Button(bookComputerLabelFrame, text="Reset", command=reset)
 
