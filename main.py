@@ -3,13 +3,14 @@ from tkinter import ttk
 from tkinter import messagebox
 import json
 import sv_ttk
+import os
 
 def loadJSON():
     with open("masterlist.json") as fp:
         global teachers
         teachers = json.load(fp)
 
-loadJSON()
+loadJSON() #ADD MULTIPLE PERIODS
 
 teacherTuple = tuple(teachers.keys())
 print(teacherTuple)
@@ -17,9 +18,7 @@ computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab")
 days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
 root = Tk()
-root.title("Computer Booking v1.0")
-
-titleText = StringVar()
+root.title("Computer Booking v1.7")
 
 period1Monday = StringVar()
 period2Monday = StringVar()
@@ -48,40 +47,87 @@ period4Friday = StringVar()
 
 teacher = StringVar()
 computer = StringVar()
+computer.set("Chromebook Cart 2")
 day = StringVar()
-period = StringVar()
+period = IntVar()
 periods = StringVar()
+
+
 
 def assignBookingInformation(bookingNumber):
         teachers[teacher.get()]["Period" + str(bookingNumber)] = period.get()
         teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
         teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
+        teachers[teacher.get()]["Booking#"] = bookingNumber
 
 def bookComputer():
     try:
         teacherList = teachers[teacher.get()].keys()
-        if not "Period1" in teacherList:
-            bookingNumber = 1
-            assignBookingInformation(bookingNumber=bookingNumber)
-        elif not "Period2" in teacherList:
-            bookingNumber = 2
-            assignBookingInformation(bookingNumber=bookingNumber)
-        elif not "Period3" in teacherList:
-            bookingNumber = 3
-            assignBookingInformation(bookingNumber=bookingNumber)
+        stringVariable = "period" + str(period.get()) + day.get()
+        if eval(stringVariable + ".get() == \"\""):
+            if not "Period1" in teacherList:
+                bookingNumber = 1
+                assignBookingInformation(bookingNumber=bookingNumber)
+            elif not "Period2" in teacherList:
+                bookingNumber = 2
+                assignBookingInformation(bookingNumber=bookingNumber)
+            elif not "Period3" in teacherList:
+                bookingNumber = 3
+                assignBookingInformation(bookingNumber=bookingNumber)
+            else:
+                messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
         else:
-            messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
-
+            messagebox.showerror(title="Attempted Overwrite", message=(str(eval(stringVariable + ".get()")) + " already has Period " + str(period.get()) + " booked on " + day.get()), icon="error", detail=("Please book a different period :)"))
         saveJSON()
+        updateBookingBrowser()
     except KeyError:
         pass
+
+def updateBookingBrowser():
+
+    period1Monday.set(value="")
+    period2Monday.set(value="")
+    period3Monday.set(value="")
+    period4Monday.set(value="")
+
+    period1Tuesday.set(value="")
+    period2Tuesday.set(value="")
+    period3Tuesday.set(value="")
+    period4Tuesday.set(value="")
+
+    period1Wednesday.set(value="")
+    period2Wednesday.set(value="")
+    period3Wednesday.set(value="")
+    period4Wednesday.set(value="")
+
+    period1Thursday.set(value="")
+    period2Thursday.set(value="")
+    period3Thursday.set(value="")
+    period4Thursday.set(value="")
+
+    period1Friday.set(value="")
+    period2Friday.set(value="")
+    period3Friday.set(value="")
+    period4Friday.set(value="")
+
+    for item in teachers.keys():
+        if "Booking#" in teachers[item]:
+            tempVar = teachers[item]["Booking#"]
+            while tempVar > 0:
+                stringVariable = "period" + str(teachers[item]["Period" + str(tempVar)]) + teachers[item]["Day" + str(tempVar)]
+                eval(stringVariable + ".set(\"" + item + "\")")
+                tempVar = tempVar - 1
+updateBookingBrowser()
+
 
 def saveJSON():
     with open("masterlist.json", "w") as fp:
         json.dump(teachers, fp, indent=4, sort_keys=True)
 
 def reset():
-    print(teachers)
+    os.system("reset-masterlist.py")
+    loadJSON()
+    updateBookingBrowser()
 
 mainframe = ttk.Frame(root, padding=(3,3,12,12))
 
@@ -303,7 +349,11 @@ bookPeriodFrame.rowconfigure(2, weight=1)
 bookPeriodFrame.rowconfigure(3, weight=1)
 bookPeriodFrame.rowconfigure(4, weight=1)
 
+for child in bookComputerLabelFrame.winfo_children():
+    child.grid_configure(padx=5, pady=5)
 
+for child in bookingBrowserLabelFrame.winfo_children():
+    child.grid_configure(padx=5, pady=5, ipadx=5, ipady=5)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
