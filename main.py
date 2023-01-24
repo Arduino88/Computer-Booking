@@ -1,6 +1,27 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+from pathlib import Path
+import os
+
+#Tuples are plural
+teachers = ("Mr. Jensen", "Mr. Beekers", "Mr. Kivari", "Ms. Wraight")
+computers = ("Chomebook Cart 1", "Chomebook Cart 2", "Room 33 - Computer Lab")
+days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+
+
+def verifyMasterLists():
+    folderPath = Path("Teachers\\")
+    if not folderPath.exists():
+        os.mkdir(folderPath)
+    for staff in teachers:
+        pathString = "Teachers\\" + staff + ".txt"
+        filePath = Path(pathString)
+        if not filePath.exists():
+            file = open(pathString, "w+")
+            file.close()
+
+verifyMasterLists()
 
 root = Tk()
 root.title("Computer Booking v1.0")
@@ -111,15 +132,15 @@ btnReset = ttk.Button(bookComputerLabelFrame, text="Reset")
 
 lblStaffMember = ttk.Label(bookComboBoxFrame, text="Staff Member")
 cbxStaffMember = ttk.Combobox(bookComboBoxFrame, textvariable=teacher)
-cbxStaffMember["values"] = ("Mr. Jensen", "Mr. Beekers", "Mr. Kivari", "Mr. Tate")
+cbxStaffMember["values"] = teachers
 
 lblBooking = ttk.Label(bookComboBoxFrame, text="Booking")
 cbxBooking = ttk.Combobox(bookComboBoxFrame, textvariable=computer)
-cbxBooking["values"] = ("Chomebook Cart 1", "Chomebook Cart 2", "Room 33 - Computer Lab")
+cbxBooking["values"] = computers
 
 lblDay = ttk.Label(bookComboBoxFrame, text="Day")
 cbxDay = ttk.Combobox(bookComboBoxFrame, textvariable=day)
-cbxDay["values"] = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+cbxDay["values"] = days
 
 lblPeriod = ttk.Label(bookPeriodFrame, text="Period")
 rBtnPeriod1 = ttk.Radiobutton(bookPeriodFrame, text="1", variable=period, value=1)
@@ -127,90 +148,90 @@ rBtnPeriod2 = ttk.Radiobutton(bookPeriodFrame, text="2", variable=period, value=
 rBtnPeriod3 = ttk.Radiobutton(bookPeriodFrame, text="3", variable=period, value=3)
 rBtnPeriod4 = ttk.Radiobutton(bookPeriodFrame, text="4", variable=period, value=4)
 
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+mainframe.grid(column=0, row=0, sticky="nwes")
 
-lblTitle.grid(column=0, row=0, sticky=(N, W, E, S))
-bookingBrowserLabelFrame.grid(column=0, row=1, sticky=(N, W, E, S))
-bookComputerLabelFrame.grid(column=0, row=2, sticky=(N, W, E, S))
+lblTitle.grid(column=0, row=0, sticky="nwes")
+bookingBrowserLabelFrame.grid(column=0, row=1, sticky="nwes")
+bookComputerLabelFrame.grid(column=0, row=2, sticky="nwes")
 
-bookComboBoxFrame.grid(column=0, row=0, rowspan=3, sticky=(N, W, E, S))
-bookPeriodFrame.grid(column=1, row=0, rowspan=3, sticky=(N, W, E, S))
-lblPeriodS.grid(column=2, row=0, sticky=(N, W, E, S))
-spnPeriodS.grid(column=3, row=0, sticky=(N, W, E, S))
-btnBack.grid(column=2, row=1, columnspan=2, sticky=(N, W, E, S))
-btnReset.grid(column=2, row=2, columnspan=2, sticky=(N, W, E, S))
+bookComboBoxFrame.grid(column=0, row=0, rowspan=3, sticky="nwes")
+bookPeriodFrame.grid(column=1, row=0, rowspan=3, sticky="nwes")
+lblPeriodS.grid(column=2, row=0, sticky="nwes")
+spnPeriodS.grid(column=3, row=0, sticky="nwes")
+btnBack.grid(column=2, row=1, columnspan=2, sticky="nwes")
+btnReset.grid(column=2, row=2, columnspan=2, sticky="nwes")
 
-lblStaffMember.grid(column=0, row=0, sticky=(N, W, E, S))
-cbxStaffMember.grid(column=0, row=1, sticky=(N, W, E, S))
+lblStaffMember.grid(column=0, row=0, sticky="nwes")
+cbxStaffMember.grid(column=0, row=1, sticky="nwes")
 
-lblBooking.grid(column=0, row=2, sticky=(N, W, E, S))
-cbxBooking.grid(column=0, row=3, sticky=(N, W, E, S))
-lblDay.grid(column=0, row=4, sticky=(N, W, E, S))
-cbxDay.grid(column=0, row=5, sticky=(N, W, E, S))
+lblBooking.grid(column=0, row=2, sticky="nwes")
+cbxBooking.grid(column=0, row=3, sticky="nwes")
+lblDay.grid(column=0, row=4, sticky="nwes")
+cbxDay.grid(column=0, row=5, sticky="nwes")
 
-lblPeriod.grid(column=0, row=0, sticky=(N, W, E, S))
-rBtnPeriod1.grid(column=0, row=1, sticky=(N, W, E, S))
-rBtnPeriod2.grid(column=0, row=2, sticky=(N, W, E, S))
-rBtnPeriod3.grid(column=0, row=3, sticky=(N, W, E, S))
-rBtnPeriod4.grid(column=0, row=4, sticky=(N, W, E, S))
+lblPeriod.grid(column=0, row=0, sticky="nwes")
+rBtnPeriod1.grid(column=0, row=1, sticky="nwes")
+rBtnPeriod2.grid(column=0, row=2, sticky="nwes")
+rBtnPeriod3.grid(column=0, row=3, sticky="nwes")
+rBtnPeriod4.grid(column=0, row=4, sticky="nwes")
 
 
 #PERIOD LABELFRAME GRID FORMATTING
-lblMonday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblTuesday.grid(column=1, row=0, sticky=(N, E, S, W))
-lblWednesday.grid(column=2, row=0, sticky=(N, E, S, W))
-lblThursday.grid(column=3, row=0, sticky=(N, E, S, W))
-lblFriday.grid(column=4, row=0, sticky=(N, E, S, W))
+lblMonday.grid(column=0, row=0, sticky="nwes")
+lblTuesday.grid(column=1, row=0, sticky="nwes")
+lblWednesday.grid(column=2, row=0, sticky="nwes")
+lblThursday.grid(column=3, row=0, sticky="nwes")
+lblFriday.grid(column=4, row=0, sticky="nwes")
 
-period1MondayLabelFrame.grid(column=0, row=1, sticky=(N, W, E, S))
-period1TuesdayLabelFrame.grid(column=1, row=1, sticky=(N, W, E, S))
-period1WednesdayLabelFrame.grid(column=2, row=1, sticky=(N, W, E, S))
-period1ThursdayLabelFrame.grid(column=3, row=1, sticky=(N, W, E, S))
-period1FridayLabelFrame.grid(column=4, row=1, sticky=(N, W, E, S))
+period1MondayLabelFrame.grid(column=0, row=1, sticky="nwes")
+period1TuesdayLabelFrame.grid(column=1, row=1, sticky="nwes")
+period1WednesdayLabelFrame.grid(column=2, row=1, sticky="nwes")
+period1ThursdayLabelFrame.grid(column=3, row=1, sticky="nwes")
+period1FridayLabelFrame.grid(column=4, row=1, sticky="nwes")
 
-period2MondayLabelFrame.grid(column=0, row=2, sticky=(N, W, E, S))
-period2TuesdayLabelFrame.grid(column=1, row=2, sticky=(N, W, E, S))
-period2WednesdayLabelFrame.grid(column=2, row=2, sticky=(N, W, E, S))
-period2ThursdayLabelFrame.grid(column=3, row=2, sticky=(N, W, E, S))
-period2FridayLabelFrame.grid(column=4, row=2, sticky=(N, W, E, S))
+period2MondayLabelFrame.grid(column=0, row=2, sticky="nwes")
+period2TuesdayLabelFrame.grid(column=1, row=2, sticky="nwes")
+period2WednesdayLabelFrame.grid(column=2, row=2, sticky="nwes")
+period2ThursdayLabelFrame.grid(column=3, row=2, sticky="nwes")
+period2FridayLabelFrame.grid(column=4, row=2, sticky="nwes")
 
-period3MondayLabelFrame.grid(column=0, row=3, sticky=(N, W, E, S))
-period3TuesdayLabelFrame.grid(column=1, row=3, sticky=(N, W, E, S))
-period3WednesdayLabelFrame.grid(column=2, row=3, sticky=(N, W, E, S))
-period3ThursdayLabelFrame.grid(column=3, row=3, sticky=(N, W, E, S))
-period3FridayLabelFrame.grid(column=4, row=3, sticky=(N, W, E, S))
+period3MondayLabelFrame.grid(column=0, row=3, sticky="nwes")
+period3TuesdayLabelFrame.grid(column=1, row=3, sticky="nwes")
+period3WednesdayLabelFrame.grid(column=2, row=3, sticky="nwes")
+period3ThursdayLabelFrame.grid(column=3, row=3, sticky="nwes")
+period3FridayLabelFrame.grid(column=4, row=3, sticky="nwes")
 
-period4MondayLabelFrame.grid(column=0, row=4, sticky=(N, W, E, S))
-period4TuesdayLabelFrame.grid(column=1, row=4, sticky=(N, W, E, S))
-period4WednesdayLabelFrame.grid(column=2, row=4, sticky=(N, W, E, S))
-period4ThursdayLabelFrame.grid(column=3, row=4, sticky=(N, W, E, S))
-period4FridayLabelFrame.grid(column=4, row=4, sticky=(N, W, E, S))
+period4MondayLabelFrame.grid(column=0, row=4, sticky="nwes")
+period4TuesdayLabelFrame.grid(column=1, row=4, sticky="nwes")
+period4WednesdayLabelFrame.grid(column=2, row=4, sticky="nwes")
+period4ThursdayLabelFrame.grid(column=3, row=4, sticky="nwes")
+period4FridayLabelFrame.grid(column=4, row=4, sticky="nwes")
 
 #PERIOD LABELFRAME LABEL GRID FORMATTING
-lblPeriod1Monday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod2Monday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod3Monday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod4Monday.grid(column=0, row=0, sticky=(N, E, S, W))
+lblPeriod1Monday.grid(column=0, row=0, sticky="nwes")
+lblPeriod2Monday.grid(column=0, row=0, sticky="nwes")
+lblPeriod3Monday.grid(column=0, row=0, sticky="nwes")
+lblPeriod4Monday.grid(column=0, row=0, sticky="nwes")
 
-lblPeriod1Tuesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod2Tuesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod3Tuesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod4Tuesday.grid(column=0, row=0, sticky=(N, E, S, W))
+lblPeriod1Tuesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod2Tuesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod3Tuesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod4Tuesday.grid(column=0, row=0, sticky="nwes")
 
-lblPeriod1Wednesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod2Wednesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod3Wednesday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod4Wednesday.grid(column=0, row=0, sticky=(N, E, S, W))
+lblPeriod1Wednesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod2Wednesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod3Wednesday.grid(column=0, row=0, sticky="nwes")
+lblPeriod4Wednesday.grid(column=0, row=0, sticky="nwes")
 
-lblPeriod1Thursday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod2Thursday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod3Thursday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod4Thursday.grid(column=0, row=0, sticky=(N, E, S, W))
+lblPeriod1Thursday.grid(column=0, row=0, sticky="nwes")
+lblPeriod2Thursday.grid(column=0, row=0, sticky="nwes")
+lblPeriod3Thursday.grid(column=0, row=0, sticky="nwes")
+lblPeriod4Thursday.grid(column=0, row=0, sticky="nwes")
 
-lblPeriod1Friday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod2Friday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod3Friday.grid(column=0, row=0, sticky=(N, E, S, W))
-lblPeriod4Friday.grid(column=0, row=0, sticky=(N, E, S, W))
+lblPeriod1Friday.grid(column=0, row=0, sticky="nwes")
+lblPeriod2Friday.grid(column=0, row=0, sticky="nwes")
+lblPeriod3Friday.grid(column=0, row=0, sticky="nwes")
+lblPeriod4Friday.grid(column=0, row=0, sticky="nwes")
 
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
