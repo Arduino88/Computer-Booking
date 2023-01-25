@@ -1,20 +1,7 @@
 {
-    "Mr. Barraball": {
-        "Booking#": 2,
-        "Computer1": "Room 33 - Computer Lab",
-        "Computer2": "Room 33 - Computer Lab",
-        "Day1": "Monday",
-        "Day2": "Monday",
-        "Period1": 2,
-        "Period2": 1
-    },
+    "Mr. Barraball": {},
     "Mr. Beekers": {},
-    "Mr. Jensen": {
-        "Booking#": 1,
-        "Computer1": "Room 33 - Computer Lab",
-        "Day1": "Wednesday",
-        "Period1": 2
-    },
+    "Mr. Jensen": {},
     "Mr. Kivari": {},
     "Mr. White": {},
     "Ms. Best": {},
