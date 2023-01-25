@@ -126,8 +126,7 @@
 #        teachers --> Global dictionary variable used to store all the booking data
 #        teacherTuple --> Tuple variable used as options to select for the teacher combobox
 #        tempVar --> Temporary local counter variable used to store the current booking number for a teacher
-
-
+#---------------------------------------------
 
 from tkinter import *
 from tkinter import ttk
