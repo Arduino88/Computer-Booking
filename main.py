@@ -139,14 +139,11 @@ import os
 #Function Definition - loadJSON() <-- Early in code because global teachers variable is initialized
 def loadJSON():
     with open("masterlist.json") as fp:
-        global teachers
-        teachers = json.load(fp)
+        global teachers #Initialize global teachers dictionary
+        teachers = json.load(fp) #Load JSON file to ditionary
 
-loadJSON() #ADD MULTIPLE PERIODS - BRO IDFK WHAT THIS MEANS
-
-#Initiate Teacher Tuple
-teacherTuple = tuple(teachers.keys())
-print(teacherTuple)
+loadJSON() #Load the JSON file at start of program
+teacherTuple = tuple(teachers.keys()) #Set teacherTuple to every dictionary key from teachers
 
 #Initiate Combobox Option Tuples
 computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab")
@@ -154,14 +151,15 @@ days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
 #Initiate Tkinter Root
 root = Tk()
-root.title("Computer Booking v1.7")
+root.title("Computer Booking v1.7") #Set window title
 
-#Tkinter Variable Initialization
+#Placeholder color variables 
 color1 = "#bde0fe"
 color2 = "#a8dadc"
 color3 = "#457b9d"
 color4 = "#f1faee"
 
+#Tkinter Variable Initialization
 period1Monday = StringVar()
 period2Monday = StringVar()
 period3Monday = StringVar()
@@ -196,44 +194,45 @@ periods = IntVar(value=1) #Spinbox
 
 #Function Definition
 def assignBookingInformation(bookingNumber, periodInt):
-        teachers[teacher.get()]["Period" + str(bookingNumber)] = periodInt
-        teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get()
-        teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get()
-        teachers[teacher.get()]["Booking#"] = bookingNumber
+        teachers[teacher.get()]["Period" + str(bookingNumber)] = periodInt #Write period to dictionary
+        teachers[teacher.get()]["Computer" + str(bookingNumber)] = computer.get() #Write computer to dictionary
+        teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get() #Write to to dictionary
+        teachers[teacher.get()]["Booking#"] = bookingNumber # Write booking number to dictionary
 
 def bookComputer():
+    #Initiate temporary variables
     periodInt = period.get()
     counter = periods.get()
     skip = False
-    print(str(counter) + "  " + str(periodInt))
-    while counter > 0 and not skip:
+    while counter > 0 and not skip: #Repeat for the number of periods the user is booking
         try:
             teacherList = teachers[teacher.get()].keys()
-            stringVariable = "period" + str(periodInt) + day.get()
-            if eval(stringVariable + ".get() == \"\""):
-                if not "Period1" in teacherList:
+            stringVariable = "period" + str(periodInt) + day.get() #Set stringVariable to the name of the desired variable (format: "period1Monday")
+            if eval(stringVariable + ".get() == \"\""): #evaluate stringVariable (format: period1Monday.get() == "")
+                if not "Period1" in teacherList: #If no key named "Period1" exists for the current teacher (they have no bookings yet)
                     bookingNumber = 1
                     assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                elif not "Period2" in teacherList:
+                elif not "Period2" in teacherList: #If no key named "Period2" exists for the current teacher (they have 1 booking)
                     bookingNumber = 2
                     assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                elif not "Period3" in teacherList:
+                elif not "Period3" in teacherList: #If no key named "Period3" exists for the current teacher (they have 2 bookings)
                     bookingNumber = 3
                     assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                else:
+                else: #The current teacher has already been booked 3 times
                     messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
-                    skip = True
-            else:
+                    skip = True #Move to the next nested teacher dictionary
+            else: #Selected period already booked
                 messagebox.showerror(title="Attempted Overwrite", message=(str(eval(stringVariable + ".get()")) + " already has Period " + str(period.get()) + " booked on " + day.get()), icon="error", detail=("Please book a different period :)"))
-                skip = True
+                skip = True #Move to the next nested teacher dictionary
             saveJSON()
             updateBookingBrowser()
-        except KeyError:
-            pass
-        periodInt = periodInt + 1
-        counter = counter - 1
+        except KeyError: #KeyErrors result from searching a dicitonary for a key that does not exist (This occurs for each empty teacher dictionary)
+            pass #Ignore these errors
+        periodInt = periodInt + 1 #Increment periodInt
+        counter = counter - 1 #Increment counter
 
 def updateBookingBrowser():
+    #Clear all booking labels
     period1Monday.set(value="")
     period2Monday.set(value="")
     period3Monday.set(value="")
@@ -259,26 +258,27 @@ def updateBookingBrowser():
     period3Friday.set(value="")
     period4Friday.set(value="")
 
-    for item in teachers.keys():
-        if "Booking#" in teachers[item]:
-            tempVar = teachers[item]["Booking#"]
-            while tempVar > 0:
-                stringVariable = "period" + str(teachers[item]["Period" + str(tempVar)]) + teachers[item]["Day" + str(tempVar)]
-                if str(teachers[item]["Computer" + str(tempVar)]) == computer.get():
-                    eval(stringVariable + ".set(\"" + item + "\")")
-                tempVar = tempVar - 1
-    root.after(100, updateBookingBrowser)
-updateBookingBrowser()
+    for item in teachers.keys(): #For each teacher in the database
+        if "Booking#" in teachers[item]: #If a key called "Booking#" exists
+            tempVar = teachers[item]["Booking#"] #Set tempVar as the booking number
+            while tempVar > 0: #Loop tempVar times
+                stringVariable = "period" + str(teachers[item]["Period" + str(tempVar)]) + teachers[item]["Day" + str(tempVar)] #Set stringVariable to the variable named current period and date (format: period1Monday)
+                if str(teachers[item]["Computer" + str(tempVar)]) == computer.get(): #Only display the bookings for the currently selected computer
+                    eval(stringVariable + ".set(\"" + item + "\")") #Display the current booking in the booking browser
+                tempVar = tempVar - 1 #Decrement tempVar (move down to next booking for the current teacher)
+    root.after(100, updateBookingBrowser) #Run this function every 100ms (0.1 seconds)
+updateBookingBrowser() #Run this function at the start of the program to display the saved bookings
 
 def saveJSON():
     with open("masterlist.json", "w") as fp:
-        json.dump(teachers, fp, indent=4, sort_keys=True)
+        json.dump(teachers, fp, indent=4, sort_keys=True) #Alphabetically pretty print the teachers dictionary into masterlist.json with an indent of 4
 
 def reset():
-    os.system("reset-masterlist.py")
-    loadJSON()
-    updateBookingBrowser()
+    os.system("reset-masterlist.py") #Run reset-masterlist.py
+    loadJSON() #Load the now-empty masterlist.json
+    updateBookingBrowser() #Update the booking browser
 
+#-----USER INTERFACE-----
 #Initialize Tkinter Mainframe
 mainframe = ttk.Frame(root, padding=(3,3,12,12))
 
@@ -576,22 +576,22 @@ period4ThursdayLabelFrame.rowconfigure(0, weight=1)
 period4FridayLabelFrame.rowconfigure(0, weight=1)
 
 #Formatting Loops
-for child in bookComputerLabelFrame.winfo_children():
+for child in bookComputerLabelFrame.winfo_children(): #Set the padx and pady parameters of all the sub-objects in bookComputerLabelFrame
     child.grid_configure(padx=5, pady=5)
 
-for child in bookingBrowserLabelFrame.winfo_children():
+for child in bookingBrowserLabelFrame.winfo_children(): #Set the padx and pady parameters of all the sub-objects in bookingBrowserLabelFrame
     child.grid_configure(padx=5, pady=5, ipadx=5, ipady=5)
-    for item in child.winfo_children():
+    for item in child.winfo_children(): #Set the padx and pady parameters of all the sub-objects in each sub-object in bookingBrowserLabelFrame
         item.grid_configure(padx=5, pady=5)
 
-for child in mainframe.winfo_children():
+for child in mainframe.winfo_children(): #Set the padx and pady parameters of all the sub-objects in mainframe
     child.grid_configure(padx=5, pady=5)
 
 #Set Tkinter TTK Theme
 sv_ttk.set_theme("dark")
 
 #Update Booking Browser Loop
-root.after(100, updateBookingBrowser)
+root.after(100, updateBookingBrowser) #Call updateBookingBrowser() 10 times per second
 
 #Main Event Handler Loop
 root.mainloop()
