@@ -1,132 +1,163 @@
-#---------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
 #Name of Repository: Arduino_88/Computer-Booking
 #Name of Programmers: Simon Siena, Peyton Freeburn, Emily Skinner, Cody Fitzgerald, Westley Lundberg
-#Language Used: Python 3.11
+#Language Used: Python 3.10.4
 #Date Project Started: January 12, 2023
-#Date of Most Recent Commit: January 24, 2023
-#ADD DESCRIPTION HERE
-#
+#Date of Most Recent Commit: January 26, 2023
+
+#Description:
+#   This program allows staff members to access and book computer labs and/or chromebook carts.
+#   At the top of the screen it will display what is currently selected to be booked.
+#   Below that is the days of the week Monday to Friday, with 4 columns in each day. 
+#   The columns are what period it is, being period 1, 2, 3, and 4. 
+#   The boxes that are empty are available to be booked, meanwhile those with a teacher's name
+#   and are highlighted are taken. This display screen is not interactive, the way you book 
+#   is with the Tkinter objects below. You first select your name which is on a list of teachers, and the computer you wish to book. 
+#   (To avoid people by passing the 3 of the same period per week rule). 
+#   Then, select the day, time, and period. You can then click the submit button, 
+#   which will either tell you that you’ve successfully booked a slot or, 
+#   this time is already taken, which can also be seen on the booking browser.
+
 #Data Dictionary:
 #   Functions:
 #       assignBookingInformation() --> Pushes tkinter object variables into the global teachers dictionary
 #       bookComputer() --> Book button function; calculates the "Booking#": key in the global teachers dictionary; calls saveJSON(); calls updateBookingBrowser()
+#       checkWeekBookings() --> Checks the currently selected teacher's bookings in the same period to ensure they can only book a computer 3 times in one period per week
+#       getBookingNumber() --> Returns the number of computer bookings in the current teacher's subdictionary of the global teachers dictionary
 #       loadJSON() --> Loads the global teachers dictionary from masterlist.json
 #       reset() --> Runs reset-masterlist.py; calls loadJSON() and then calls updateBookingBrowser()
 #       saveJSON() --> Dumps the global teachers dictionary to masterlist.json with an indent of 4
 #       updateBookingBrowser() --> Clears all the booking browser and then runs through each teacher key in the global teachers ditionary, adding them to the corresponding tkinter stringVar objects
 #   
 #   Variables:
-#        bookComboBoxFrame --> Tkinter Frame object which contains the booking comboboxes
-#        bookComputerLabelFrame --> Tkinter Label Frame object which contains the bottom section of the UI
-#        bookingBrowserLabelFrame --> Tkinter Label Frame object which contains the upper secion of the UI
-#        bookingNumber --> Temporary integer variable and parameter used to store the current booking number when booking a slot
-#        bookPeriodFrame --> Tkinter Frame object which contains the radio buttons used to book the period
-#        btnBook --> Tkinter Button object which books a period with the selected parameters
-#        btnReset --> Tkinter Button object which clears masterlist.json
-#        cbxBooking --> Tkinter Combobox object is used to select which computers are being booked
-#        cbxDay --> Tkinter Combobox object which is used to select which day is being booked
-#        cbxStaffMember --> Tkinter Combobox object which is used to select which staff member is booking the computers
-#        child --> Temporary variable used in for loops
-#        color1 --> String variable to store a theme color for easy customization
-#        color2 --> String variable to store a theme color for easy customization
-#        color3 --> String variable to store a theme color for easy customization
-#        color4 --> String variable to store a theme color for easy customization
-#        computer --> Tkinter StringVar object used to store the selected computer
-#        computers --> Tuple variable used to store the list of all selectable computers
-#        counter --> Temporary integer variable used when selecting multiple periods at once
-#        day --> Tkinter StringVar object used to store the selected day
-#        days --> Tuple variable used to store the list of all selectable days
-#        fp --> Temporary Path variable used to store the location of masterlist.json
-#        item --> Temporary object variable used to store dictionary keys
-#        lblBooking --> Tkinter Label object used as a booking combobox header
-#        lblDay --> Tkinter Label object used as a day combobox header
-#        lblFriday --> Tkinter Label object used as a header for the Friday column in the booking browser
-#        lblMonday --> Tkinter Label object used as a header for the Monday column in the booking browser
-#        lblPeriod --> Tkinter Label object used as a header for the period combobox header
-#        lblPeriod1Friday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod1Monday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod1Thursday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod1Tuesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod1Wednesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod2Friday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod2Monday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod2Thursday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod2Tuesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod2Wednesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod3Friday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod3Monday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod3Thursday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod3Tuesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod3Wednesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod4Friday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod4Monday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod4Thursday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod4Tuesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriod4Wednesday --> Tkinter Label object to display if the corresponding period is booked
-#        lblPeriodS --> Tkinter Label object used as a period(s) spinbox header
-#        lblStaffMember --> Tkinter Label object used as a staff member combobox header
-#        lblThursday --> Tkinter Label object used as a header for the Thursday column in the booking browser
-#        lblTitle --> Tkinter Label object used as the title of the program (header)
-#        lblTuesday --> Tkinter Label object used as a header for the Tuesday column in the booking browser
-#        lblWednesday --> Tkinter Label object used as a header for the Wednesday column in the booking browser
-#        mainframe --> Tkinter Frame object used as the main panel of the program above root
-#        period --> Tkinter IntVar object used to store the value of the period radiobuttons
-#        period1Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period1FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period1Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period1MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period1Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period1ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period1Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period1TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period1Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period1WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period2Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period2FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period2Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period2MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period2Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period2ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period2Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period2TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period2Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period2WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period3Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period3FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period3Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period3MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period3Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period3ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period3Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period3TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period3Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period3WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period4Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period4FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period4Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period4MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period4Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period4ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period4Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period4TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        period4Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
-#        period4WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
-#        periodInt --> Temporary integer variable and parameter used to store the current period number when booking a slot (when booking multiple periods)
-#        periods --> Tkinter IntVar object used to store the value of the period(s) spinbox
-#        rBtnPeriod1 --> Tkinter Radio Button object used to signify period 1
-#        rBtnPeriod2 --> Tkinter Radio Button object used to signify period 2
-#        rBtnPeriod3 --> Tkinter Radio Button object used to signify period 3
-#        rBtnPeriod4 --> Tkinter Radio Button object used to signify period 4
-#        root --> Tkinter Root object (the physical window itself)
-#        skip --> Boolean variable used to exit while loop
-#        spnPeriodS --> Tkinter Spinbox object used to select the number of periods to book
-#        stringVariable --> String variable used to store a set of code as text in order to function properely in an eval() function
-#        teacher --> Tkinter StringVar object used to store the selected teacher
-#        teacherList --> Tuple variable used to store all teachers from masterlist.json
-#        teachers --> Global dictionary variable used to store all the booking data
-#        teacherTuple --> Tuple variable used as options to select for the teacher combobox
-#        tempVar --> Temporary local counter variable used to store the current booking number for a teacher
-#---------------------------------------------
+#       Boolean:
+#           day_is_booked --> Boolean variable to store if the current day is booked by the selected teacher
+#           loop --> Boolean variable used to exit a while loop
+#           skip --> Boolean variable used to exit a while loop
+#
+#       Dictionary:
+#           teacherList --> Dictionary variable used to store current teacher's sub-dictionary from the teachers dictionary
+#           teachers --> Global dictionary variable used to store all the booking data
+#
+#       Index:
+#           child --> Temporary variable used in for loops
+#           item --> Temporary for loop variable used to store dictionary keys
+#
+#       Integer:
+#           bookingNumber --> Temporary integer variable and parameter used to store the current booking number when booking a slot
+#           counter --> Temporary integer variable used when selecting multiple periods at once
+#           periodInt --> Temporary integer variable and parameter used to store the current period number when booking a slot (when booking multiple periods)
+#           tempVar --> Temporary local counter variable used to store the current booking number for a teacher
+#       Object:
+#           bookComboBoxFrame --> Tkinter Frame object which contains the booking comboboxes
+#           bookComputerLabelFrame --> Tkinter Label Frame object which contains the bottom section of the UI
+#           bookingBrowserLabelFrame --> Tkinter Label Frame object which contains the upper secion of the UI
+#           bookPeriodFrame --> Tkinter Frame object which contains the radio buttons used to book the period
+#           btnBook --> Tkinter Button object which books a period with the selected parameters
+#           btnReset --> Tkinter Button object which clears masterlist.json
+#           cbxBooking --> Tkinter Combobox object is used to select which computers are being booked
+#           cbxDay --> Tkinter Combobox object which is used to select which day is being booked
+#           cbxStaffMember --> Tkinter Combobox object which is used to select which staff member is booking the computers
+#           computer --> Tkinter StringVar object used to store the selected computer
+#           day --> Tkinter StringVar object used to store the selected day
+#           lblBooking --> Tkinter Label object used as a booking combobox header
+#           lblDay --> Tkinter Label object used as a day combobox header
+#           lblFriday --> Tkinter Label object used as a header for the Friday column in the booking browser
+#           lblMonday --> Tkinter Label object used as a header for the Monday column in the booking browser
+#           lblPeriod --> Tkinter Label object used as a header for the period combobox header
+#           lblPeriod1Friday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod1Monday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod1Thursday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod1Tuesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod1Wednesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod2Friday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod2Monday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod2Thursday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod2Tuesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod2Wednesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod3Friday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod3Monday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod3Thursday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod3Tuesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod3Wednesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod4Friday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod4Monday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod4Thursday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod4Tuesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriod4Wednesday --> Tkinter Label object to display if the corresponding period is booked
+#           lblPeriodS --> Tkinter Label object used as a period(s) spinbox header
+#           lblStaffMember --> Tkinter Label object used as a staff member combobox header
+#           lblThursday --> Tkinter Label object used as a header for the Thursday column in the booking browser
+#           lblTitle --> Tkinter Label object used as the title of the program (header)
+#           lblTuesday --> Tkinter Label object used as a header for the Tuesday column in the booking browser
+#           lblWednesday --> Tkinter Label object used as a header for the Wednesday column in the booking browser
+#           mainframe --> Tkinter Frame object used as the main panel of the program above root
+#           period --> Tkinter IntVar object used to store the value of the period radiobuttons
+#           period1Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period1FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period1Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period1MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period1Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period1ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period1Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period1TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period1Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period1WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period2Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period2FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period2Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period2MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period2Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period2ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period2Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period2TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period2Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period2WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period3Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period3FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period3Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period3MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period3Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period3ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period3Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period3TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period3Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period3WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period4Friday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period4FridayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period4Monday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period4MondayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period4Thursday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period4ThursdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period4Tuesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period4TuesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           period4Wednesday --> Tkinter StringVar object used to store the value of the corresponding period's booking
+#           period4WednesdayLabelFrame --> Tkinter Label Frame object used as a way to emphasize the corresponding period and hold the period label
+#           periods --> Tkinter IntVar object used to store the value of the period(s) spinbox
+#           rBtnPeriod1 --> Tkinter Radio Button object used to signify period 1
+#           rBtnPeriod2 --> Tkinter Radio Button object used to signify period 2
+#           rBtnPeriod3 --> Tkinter Radio Button object used to signify period 3
+#           rBtnPeriod4 --> Tkinter Radio Button object used to signify period 4
+#           root --> Tkinter Root object (the physical window itself)
+#           spnPeriodS --> Tkinter Spinbox object used to select the number of periods to book
+#           teacher --> Tkinter StringVar object used to store the selected teacher
+#
+#       Path:
+#           fp --> Temporary Path variable used to store the location of masterlist.json
+#
+#       String:
+#           color1 --> String variable to store a theme color for easy customization
+#           color2 --> String variable to store a theme color for easy customization
+#           color3 --> String variable to store a theme color for easy customization
+#           color4 --> String variable to store a theme color for easy customization
+#           periodKey --> String variable used to store the currently selected period as a dictionary key
+#           stringVariable --> String variable used to store a set of code as text in order to function properely in an eval() function
+#
+#       Tuple:
+#           computers --> Tuple variable used to store the list of all selectable computers
+#           days --> Tuple variable used to store the list of all selectable days
+#           teacherTuple --> Tuple variable used as options to select for the teacher combobox
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 from tkinter import *
 from tkinter import ttk
@@ -145,7 +176,7 @@ loadJSON() #Load the JSON file at start of program
 teacherTuple = tuple(teachers.keys()) #Set teacherTuple to every dictionary key from teachers
 
 #Initiate Combobox Option Tuples
-computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab")
+computers = ("Chromebook Cart 1", "Chromebook Cart 2", "Room 33 - Computer Lab", "Room 35 - Computer Lab", "Room 37 - Computer Lab", "Room 39 - Computer Lab", "Room 280 - Computer Lab", "Upper Math Lab")
 days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
 #Initiate Tkinter Root
@@ -198,6 +229,34 @@ def assignBookingInformation(bookingNumber, periodInt):
         teachers[teacher.get()]["Day" + str(bookingNumber)] = day.get() #Write to to dictionary
         teachers[teacher.get()]["Booking#"] = bookingNumber # Write booking number to dictionary
 
+def checkWeekBookings(periodInt, teacherList):
+    try:
+        print(periodInt)
+        counter = 0 #Initialize counter at 0
+        for item in days:
+            stringVariable = "period" + str(periodInt) + str(item) #Set to name of variable of selected period and current day in loop
+            print("hi")
+            day_is_booked = eval(stringVariable + ".get() == teacher.get()")
+            if day_is_booked:
+                counter = counter + 1 #Increment the counter by 1
+        if counter >= 3: #If the teacher has 3 bookings in this period
+                messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings in period " + str(period.get())), icon="error", detail=("Please choose a different period")) #Overbook error message
+        else:
+            assignBookingInformation(periodInt=periodInt, bookingNumber=getBookingNumber(teacherList=teacherList)) #Otherwise allow them to book
+    except KeyError: #KeyErrors result from searching a dicitonary for a key that does not exist (This occurs for each empty teacher dictionary)
+        pass
+
+def getBookingNumber(teacherList):
+    counter = 1
+    loop = True
+    while loop: #Count every key in the format "Period" followed by an integer - ex: "Period12"
+        periodKey = "Period" + str(counter)
+        if periodKey in teacherList: #If the current key exists in the teacherList dictionary
+            counter = counter + 1 #Increment counter
+        else:
+            loop = False #Otherwise, exit the loop
+    return counter
+
 def bookComputer():
     #Initiate temporary variables
     periodInt = period.get()
@@ -208,18 +267,7 @@ def bookComputer():
             teacherList = teachers[teacher.get()].keys()
             stringVariable = "period" + str(periodInt) + day.get() #Set stringVariable to the name of the desired variable (format: "period1Monday")
             if eval(stringVariable + ".get() == \"\""): #evaluate stringVariable (format: period1Monday.get() == "")
-                if not "Period1" in teacherList: #If no key named "Period1" exists for the current teacher (they have no bookings yet)
-                    bookingNumber = 1
-                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                elif not "Period2" in teacherList: #If no key named "Period2" exists for the current teacher (they have 1 booking)
-                    bookingNumber = 2
-                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                elif not "Period3" in teacherList: #If no key named "Period3" exists for the current teacher (they have 2 bookings)
-                    bookingNumber = 3
-                    assignBookingInformation(bookingNumber=bookingNumber, periodInt=periodInt)
-                else: #The current teacher has already been booked 3 times
-                    messagebox.showerror(title="Attempted Overbook", message=(teacher.get() + " already has 3 bookings this week"), icon="error", detail=("Please wait until next week to book more lockers for " + teacher.get()))
-                    skip = True #Move to the next nested teacher dictionary
+                checkWeekBookings(periodInt=periodInt, teacherList=teacherList)
             else: #Selected period already booked
                 messagebox.showerror(title="Attempted Overwrite", message=(str(eval(stringVariable + ".get()")) + " already has Period " + str(period.get()) + " booked on " + day.get()), icon="error", detail=("Please book a different period :)"))
                 skip = True #Move to the next nested teacher dictionary
@@ -348,7 +396,7 @@ lblPeriod4Friday = ttk.Label(period4FridayLabelFrame, textvariable=period4Friday
 bookComboBoxFrame = ttk.Frame(bookComputerLabelFrame)
 bookPeriodFrame = ttk.Frame(bookComputerLabelFrame)
 lblPeriodS = ttk.Label(bookComputerLabelFrame, text="Period(s)")
-spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=3, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
+spnPeriodS = ttk.Spinbox(bookComputerLabelFrame, from_=1, to_=4, increment=1, textvariable=periods) # FIX THIS TO CALCULATE REMAINING PERIODS IN DAY
 btnBook = ttk.Button(bookComputerLabelFrame, text="Book", command=bookComputer)
 btnReset = ttk.Button(bookComputerLabelFrame, text="Reset", command=reset)
 
