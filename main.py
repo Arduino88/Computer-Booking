@@ -48,6 +48,7 @@
 #           counter --> Temporary integer variable used when selecting multiple periods at once
 #           periodInt --> Temporary integer variable and parameter used to store the current period number when booking a slot (when booking multiple periods)
 #           tempVar --> Temporary local counter variable used to store the current booking number for a teacher
+#
 #       Object:
 #           bookComboBoxFrame --> Tkinter Frame object which contains the booking comboboxes
 #           bookComputerLabelFrame --> Tkinter Label Frame object which contains the bottom section of the UI
@@ -231,11 +232,9 @@ def assignBookingInformation(bookingNumber, periodInt):
 
 def checkWeekBookings(periodInt, teacherList):
     try:
-        print(periodInt)
         counter = 0 #Initialize counter at 0
         for item in days:
             stringVariable = "period" + str(periodInt) + str(item) #Set to name of variable of selected period and current day in loop
-            print("hi")
             day_is_booked = eval(stringVariable + ".get() == teacher.get()")
             if day_is_booked:
                 counter = counter + 1 #Increment the counter by 1
@@ -273,7 +272,7 @@ def bookComputer():
                 skip = True #Move to the next nested teacher dictionary
             saveJSON()
             updateBookingBrowser()
-        except KeyError: #KeyErrors result from searching a dicitonary for a key that does not exist (This occurs for each empty teacher dictionary)
+        except KeyError: #KeyErrors result from searching a dictionary for a key that does not exist (This occurs for each empty teacher dictionary)
             pass #Ignore these errors
         periodInt = periodInt + 1 #Increment periodInt
         counter = counter - 1 #Increment counter
